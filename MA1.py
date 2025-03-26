@@ -93,7 +93,7 @@ def largest(a: iter):
 
 
 def count(x, s: list) -> int:                
-    """Ex6: Counts the number of occurences of x on all levels in s"""
+    """Ex6: Counts the number of occurences of x on all levels in s """
     pass
 
 
