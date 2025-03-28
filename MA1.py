@@ -40,14 +40,11 @@ import math
 def multiply(m: int, n: int) -> int:  
     """ Ex1: Computes m*n using additions"""
     # Minimize recursive calls, make sure m >= n
-    if m < n:
-        # Swap algorithm
-        m = m ^ n
-        n = m ^ n
-        m = m ^ n
+    if m < n: m, n = n, m   # Swap algorithm
+    
     # Base case
-    if n == 0:
-        return 0
+    if n == 0: return 0
+        
     # Recursive call
     return m + multiply(m, n-1)
 
@@ -55,8 +52,8 @@ def multiply(m: int, n: int) -> int:
 def harmonic(n: int) -> float:              
     """Ex2: Computes and returns the harmonc sum 1 + 1/2 + 1/3 + ... + 1/n"""
     # Base case
-    if n == 1:
-        return 1
+    if n == 1: return 1
+        
     # Recursive Call
     return 1/n + harmonic(n-1)
 
@@ -64,38 +61,50 @@ def harmonic(n: int) -> float:
 def get_binary(x: int) -> str:              
     """ Ex3: Returns the binary representation of x """
     # If the number is negative, write a '-' followed by the positve binary representation
-    if x < 0:
-        return '-' + get_binary(-x)
-    # Recursive call, if the number is bigger than two, write the binary representation of half the number (rounded down) and append a string with the remainder
-    if x // 2:
-        return get_binary(x//2) + str(x%2)
+    if x < 0: return '-' + get_binary(-x)
+        
+    # Recursive call, if the number is bigger than two, write the binary representation of half the number 
+    # (rounded down) and append a string with the remainder
+    if x // 2: return get_binary(x//2) + str(x%2)
+
     # Base case, if the number is smaller than 2, just return the number as a string 
     return str(x)
 
 def reverse_string(s: str) -> str:        
     """Ex4: Returns the s reversed """
-    if s:
-        # Recursive call
-        return reverse_string(s[1:]) + s[0]
-    # Base case
-    return ''
+    if s: return reverse_string(s[1:]) + s[0] # Recursive call
+    return ''   # Base case
+    
 
 def largest(a: iter):                     
     """Ex5: Returns the largest element in a"""
     N = len(a)
-    if N == 1:
-        return a[0]
+
+    # Base case
+    if N == 1: return a[0] 
+
+    # Recursive calls
     largest_first_half = largest(a[:N//2])
     largest_second_half = largest(a[N//2:])
-    if largest_first_half > largest_second_half:
-        return largest_first_half
-    return largest_second_half
 
+    # Return the bigger of the two halves
+    if largest_first_half > largest_second_half: return largest_first_half
+    return largest_second_half
 
 def count(x, s: list) -> int:                
     """Ex6: Counts the number of occurences of x on all levels in s """
-    pass
+    N = len(s)
+        
+    # Base case: List is of length smaller than 2
+    if N == 0: return 0                                 # If there is no element, return 0
+    if N == 1:
+        elem = s[0]                                     # Assign the value of the first element to a variable.
+        if elem == x: return 1                          # Check for match 
+        if type(elem) == list: return count(x, elem)    # Check for nested matches
+        return 0                                        #If there isn't a match nor elem is a list 
 
+    # Recursive call: Add the count for the first and second half of the list.
+    if N >= 2: return count(x, s[:N//2]) + count(x, s[N//2:])
 
 def bricklek(f: str, t: str, h: str, n: int) -> str:  
     """Ex7: Returns a string of instruction ow to move the tiles """
@@ -120,7 +129,7 @@ def fib(n: int) -> int:
 
 def main():
     print('\nCode that demonstates my implementations\n')
-    print(get_binary(10))
+    print(count([1,2], []))
     print('\n\nCode for analysing fib and fib_mem\n')
 
     print('\nBye!')
