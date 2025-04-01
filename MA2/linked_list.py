@@ -57,16 +57,41 @@ class LinkedList:
     # To be implemented
 
     def length(self):          #   Ex1
-        pass
+        n = 0
+        f = self.first
+        while f:
+            n += 1
+            f = f.succ
+        return n
 
     def mean(self):               
         pass
 
     def remove_last(self):       # Ex2
-        pass
+        f = self.first
+        if not f: raise ValueError # Raise ValueError if the list is empty
+        if not f.succ: # If there is one record, self.first needs to be set to None
+            value = f.data
+            self.first = None
+        while f.succ.succ: # We want to stop at the second last record
+            f = f.succ
+        value = f.succ.data  # Store data in a temp variable and remove the pointer to the last record
+        f.succ = None
+        return value
+
 
     def remove(self, x):         # Ex3
-        pass
+        f = self.first
+        if f.data == x: # First record is handled different
+            self.first = f.succ
+            return True
+        while f: # Loop through the list
+            if f.succ.data == x:
+                f.succ = f.succ.succ
+                return True
+            f = f.succ
+        return False
+            
 
 
     def to_list(self):            # Ex4
