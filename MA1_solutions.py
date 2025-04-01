@@ -2,8 +2,8 @@
 Solutions to module 1
 Student: Olov Rahm
 Mail: ollerahm50@gmail.com
-Reviewed by:
-Reviewed date:
+Reviewed by: Jakob Frick
+Reviewed date: 01/04-25
 """
 
 """
