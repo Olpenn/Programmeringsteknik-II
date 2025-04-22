@@ -5,11 +5,29 @@ Mail:
 Reviewed by:
 Date reviewed:
 """
+import time
 class Person: #for Ex7
     def __init__(self, name, pnr):
         self.name = name
         self.pnr = pnr
 
+    def __lt__(self, obj):
+        if self.name < obj.name:
+            return True
+        return False
+    
+    def __le__(self, obj):
+        if self.name <= obj.name:
+            return True
+        return False
+    
+    def __eq__(self, obj):
+        if self.name == obj.name:
+            return True
+        return False
+    
+    def __str__(self):
+        return f'{self.name}:{self.pnr}'
 
 class LinkedList:
 
@@ -20,7 +38,7 @@ class LinkedList:
 
     def __init__(self):
         self.first = None
-
+    
     def __iter__(self):            # Discussed in the section on iterators and generators
         current = self.first
         while current:
@@ -69,23 +87,25 @@ class LinkedList:
 
     def remove_last(self):       # Ex2
         f = self.first
-        if not f: raise ValueError # Raise ValueError if the list is empty
-        if not f.succ: # If there is one record, self.first needs to be set to None
+        if f is None: raise ValueError  # Raise ValueError if the list is empty
+        if f.succ is None:              # If there is one record, self.first needs to be set to None
             value = f.data
             self.first = None
-        while f.succ.succ: # We want to stop at the second last record
+            return value
+        while f.succ.succ:              # We want to stop at the second last record, remove its pointer and return its successors data
             f = f.succ
-        value = f.succ.data  # Store data in a temp variable and remove the pointer to the last record
+        value = f.succ.data             # Store data in a temp variable and remove the pointer to the last record
         f.succ = None
         return value
 
 
     def remove(self, x):         # Ex3
         f = self.first
+        if f is None: return False
         if f.data == x: # First record is handled different
             self.first = f.succ
             return True
-        while f: # Loop through the list
+        while f.succ is not None: # Loop through the list
             if f.succ.data == x:
                 f.succ = f.succ.succ
                 return True
@@ -95,11 +115,22 @@ class LinkedList:
 
 
     def to_list(self):            # Ex4
-        pass
+
+        def _to_list(node):
+            # Recursive Helper function
+            if node is not None: return [node.data] + _to_list(node.succ)
+            else: return []
+
+        return _to_list(self.first)
     
 
     def __str__(self):            # Ex5
-        pass
+        if self.length() == 0: 
+            return '()'
+        name = '('
+        for record in self:
+            name += f'{record}, '   # Add every item with ", " after
+        return name[:-2] + ')'      # Remove the last ", " and add the closing parenthesis
 
     def copy(self):
         result = LinkedList()
@@ -107,24 +138,39 @@ class LinkedList:
             result.insert(x)
         return result
     ''' Complexity for this implementation: 
-
+    Since we need to go through the entire list for every record, it's O(n^2)
     '''
 
     def copy(self):               # Ex6, Should be more efficient
-        pass                      
+        result = LinkedList()
+        values = reversed(self.to_list())
+        for x in values:
+            result.insert(x)
+        return result
     ''' Complexity for this implementation:
-
+        The three functions "to_list", "reversed" and the loop are all O(n) so the function is O(n)
     '''
 
 
 def main():
-    lst = LinkedList()
-    for x in [1, 1, 1, 2, 3, 3, 2, 1, 9, 7]:
-        lst.insert(x)
-    lst.print()
+    plist = LinkedList()
+    print(plist.length())
+    print(plist)
 
     # Test code:
 
 
 if __name__ == '__main__':
     main()
+
+"""
+for record in iterable:
+
+    iterator = iterable.__iter__()
+    record = iterator.__next__()
+
+yield keyword makes the function/method return the entire function/method as a generator and not only the variable directly after. 
+Hence an object with the __next__() function is returned.   
+
+
+"""
