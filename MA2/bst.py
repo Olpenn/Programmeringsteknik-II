@@ -63,6 +63,15 @@ class BST:
             else:
                 n = n.right
         return n is not None
+    
+    def contains(self, k):
+        def _contains(r, k):
+            if r is None: return False      # If the node doesn't exist, return False
+            elif r.key == k: return True    # If the node has the target as key, return True
+            elif k < r.key: return _contains(r.left, k) # If smaller, search the left
+            else: return _contains(r.right, k)  # If bigger, search the right
+        
+        return _contains(self.root, k)
 
     # def contains(self, k) # Ex8: write recursive contains
 
@@ -80,22 +89,37 @@ class BST:
 #
 
     def height(self):                 #        Ex9     
-        pass
+        def _height(r):
+            if r is None: return 0
+            else: return 1 + max(_height(r.left), _height(r.right))
+        
+        return _height(self.root)
 
     def __str__(self):                #     Ex10       
-        pass
+        if self.size() == 0: return '<>'
+        string = '<'
+        for record in self: string += f'{record}, '
+        string = string[:-2] + '>'
+        return string
+
 
     def to_list(self):                      #   Ex11   
-        pass
+        arr = []
+        for record in self: arr += [record]
+        return arr
     """
-    Complexity of to_list:
+    Complexity of to_list: O(n)
     """
 
     def to_LinkedList(self):                 #     Ex12
-        """
-        Complexity of _LinkedList:
-        """
-        pass
+        linkedlist = LinkedList()
+        list = reversed(self.to_list())
+        for record in list: linkedlist.insert(record)
+        return linkedlist
+    """
+    Complexity of _LinkedList: O(n)
+    """
+    
     def remove(self, key): #
         self.root = self._remove(self.root, key)
 
@@ -103,10 +127,10 @@ class BST:
         if r is None:
             return None
         elif k < r.key:
-            pass
+            r.left = self._remove(r.left, k)
             # r.left = left subtree with k removed
         elif k > r.key:
-            pass
+            r.right = self._remove(r.right, k)
             # r.right =  right subtree with k removed
         else:  # This is the key to be removed
             if r.left is None:     # Easy case
@@ -114,10 +138,12 @@ class BST:
             elif r.right is None:  # Also easy case
                 return r.left
             else:  # This is the tricky case.
-                pass
-                # Find the smallest key in the right subtree
-                # Put that key in this node
-                # Remove that key from the right subtree
+                node = r.right  # Find the smallest key in the right subtree
+                while node.left is not None:
+                    node = node.left
+                smallest_right = node.key 
+                r.key = smallest_right  # Put that key in this node
+                r.right = self._remove(r.right, smallest_right) # Remove that key from the right subtree
         return r  # Remember this! It applies to some of the cases above
 
 
@@ -127,7 +153,7 @@ def main():
     for x in [4, 1, 3, 6, 7, 1, 1, 5, 8]:
         t.insert(x)
     t.print()
-    print()
+    print(t)
 
     print('size  : ', t.size())
     for k in [0, 1, 2, 5, 9]:
@@ -142,10 +168,10 @@ if __name__ == "__main__":
 Ex14: What is the generator good for?
 ==============================
 
-1. computing size?
-2. computing height?
-3. contains?
-4. insert?
-5. remove?
+1. computing size?      Yes!    for record in self: size += 1
+2. computing height?    No!     Records are not enough info to compute height 
+3. contains?            No!     The usage of the generator results in O(n), not O(log n)
+4. insert?              No!     We need to use the tree structure, not the records
+5. remove?              No!     We need to modify the tree structure, access to the records are not useful
 
 """
