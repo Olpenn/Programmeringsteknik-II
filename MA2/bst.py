@@ -1,9 +1,9 @@
 """ bst.py
 
-Student:
-Mail:
-Reviewed by:
-Date reviewed:
+Student: Olov Rahm
+Mail: olra4479@student.uu.se
+Reviewed by: Rafael
+Date reviewed: 2025-04-23
 """
 
 
