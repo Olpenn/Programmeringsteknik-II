@@ -22,26 +22,33 @@ def approximate_pi(n): # Ex1
     R2 = [x**2 + y**2 for x,y in zip(X,Y)]
     COLOR = ['r' if r2 <= 1 else 'b' for r2 in R2]
     pi = 4*COLOR.count('r')/n
-    plt.figure(figsize=(10,10))
-    plt.title(f'n: {n}, Estimation of pi: {pi}', size=30)
-    plt.xlim([-1,1])
-    plt.ylim([-1,1])
-    for x,y,color in zip(X,Y,COLOR):
-        plt.scatter(x,y,color=color)
-    if __name__ == '__main__': plt.savefig(f'MA3/pi_estimation_{n}.png')
+    if __name__ == '__main__':
+        plt.figure(figsize=(10,10))
+        plt.title(f'n: {n}, Estimation of pi: {pi}', size=30)
+        plt.xlim([-1,1])
+        plt.ylim([-1,1])
+        for x,y,color in zip(X,Y,COLOR):
+            plt.scatter(x,y,color=color)
+        plt.savefig(f'MA3/pi_estimation_{n}.png')
     # plt.show()
     print(pi)
     return pi
 
-def sphere_volume(n, d): #Ex2, approximation
-    # n is the number of points
-    # d is the number of dimensions of the sphere
-    print(f'Number of points: {n}')
+def sphere_volume_single(n,d):
     COORDINATES = [(random.uniform(-1,1) for _ in range(d)) for _ in range(n)]  # Create a tuple of the d coordinates for each point (n times)
     R2 = map(lambda coordinates: sum(x_i**2 for x_i in coordinates), COORDINATES)   # Calculate R2 using comprehension, lambda and map
     in_circle = filter(lambda r2: r2 <= 1, R2)  # Filter out the points within one unit of the origin.
     npoints_in_circle = sum(1 for _ in in_circle)   # Filter is a generator, loop through and count how many elements are there
     return 2**d * npoints_in_circle/n
+
+def sphere_volume(n, d): #Ex2, approximation
+    # n is the number of points
+    # d is the number of dimensions of the sphere
+    results = []
+    for _ in range(10):
+        volume = sphere_volume_single(n, d)
+        results.append(volume)
+    return mean(results)
 
 def hypersphere_exact(d): #Ex2, real value
     # d is the number of dimensions of the sphere 
@@ -53,9 +60,9 @@ def sphere_volume_parallel1(n,d,np=10):
     # d is the number of dimensions of the sphere
     # np is the number of processes
     with future.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(sphere_volume, n, d) for _ in range(np)]
+        futures = [executor.submit(sphere_volume_single, n, d) for _ in range(np)]
         results = [f.result() for f in futures]
-    return results
+    return mean(results)
 
 #Ex4: parallel code - parallelize actual computations by splitting data
 def sphere_volume_parallel2(n,d,np=10):
@@ -64,7 +71,7 @@ def sphere_volume_parallel2(n,d,np=10):
     # np is the number of processes
     n_split = n//np
     with future.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(sphere_volume, n_split, d) for _ in range(np)]
+        futures = [executor.submit(sphere_volume_single, n_split, d) for _ in range(np)]
         results = [f.result() for f in futures]
     return mean(results)
 
@@ -91,14 +98,12 @@ def main():
     n = 100000
     d = 11
     start = pc()
-    for y in range (10):
-        sphere_volume(n,d)
+    sphere_volume(n,d)
     stop = pc()
     print(f"Ex3: Sequential time of {d} and {n}: {stop-start}")
     print("What is parallel time?")
     start = pc()
-    with future.ProcessPoolExecutor() as executor:
-        [executor.submit(sphere_volume, n, d) for _ in range(10)]
+    sphere_volume_parallel1(n,d)
     stop = pc()
     print(f"Ex3: Parallell time of {d} and {n}: {stop-start}")
    
@@ -161,6 +166,7 @@ The time for the parallell computation is ca. 4.5s (at home computer)
 On my home computer with 4 cores, the results pop out 4 at a time (as expected).
 This means it is 3 iterations instead of 10 which means ca. 30% the time.
 The time is however ca. 50% of the sequential time. I dont know what explains the difference.
+Probably initializing the threading
 
 """
 

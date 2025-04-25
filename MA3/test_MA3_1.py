@@ -14,7 +14,6 @@ class Test(unittest.TestCase):
 
         # test if the approximated pi is within the interval [3.10, 3.18]
         pi_a = approximate_pi(10000)
-        print(pi_a)
         self.assertLess(3.10, pi_a)
         self.assertLess(pi_a, 3.18)
 

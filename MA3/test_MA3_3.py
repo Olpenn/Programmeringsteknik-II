@@ -24,3 +24,6 @@ class Test(unittest.TestCase):
         self.assertLess(1.6, app_vol)
         self.assertLess(app_vol, 2.2)
         self.assertLess(par, seq)
+
+if __name__ == "__main__":
+    unittest.main()
