@@ -14,9 +14,18 @@ from statistics import mean
 from time import perf_counter as pc
 
 def approximate_pi(n): # Ex1
-    #n is the number of points
-    # Write your code here
-    return
+    print(f'Number of points: {n}')
+    X = [random.uniform(-1,1) for _ in range(n)]
+    Y = [random.uniform(-1,1) for _ in range(n)]
+    R2 = [x**2 + y**2 for x,y in zip(X,Y)]
+    COLOR = ['r' if r2 <= 1 else 'b' for r2 in R2]
+    plt.figure()
+    plt.xlim([-1,1])
+    plt.ylim([-1,1])
+    for x,y,color in zip(X,Y,COLOR):
+        plt.scatter(x,y,color=color)
+    plt.show()
+    return X
 
 def sphere_volume(n, d): #Ex2, approximation
     #n is the number of points
@@ -33,13 +42,14 @@ def sphere_volume_parallel1(n,d,np=10):
       #n is the number of points
     # d is the number of dimensions of the sphere
     #np is the number of processes
+    pass
 
 #Ex4: parallel code - parallelize actual computations by splitting data
 def sphere_volume_parallel2(n,d,np=10):
     #n is the number of points
     # d is the number of dimensions of the sphere
     #np is the number of processes
-     return 
+    return 
     
 def main():
     #Ex1
@@ -80,4 +90,5 @@ def main():
     
 
 if __name__ == '__main__':
-	main()
+	approximate_pi(10000)
+    #main()
