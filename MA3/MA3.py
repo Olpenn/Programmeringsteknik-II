@@ -49,17 +49,26 @@ def hypersphere_exact(d): #Ex2, real value
 
 #Ex3: parallel code - parallelize for loop
 def sphere_volume_parallel1(n,d,np=10):
-      #n is the number of points
+    # n is the number of points
     # d is the number of dimensions of the sphere
-    #np is the number of processes
-    pass
+    # np is the number of processes
+    with future.ProcessPoolExecutor() as executor:
+        futures = [executor.submit(sphere_volume, n, d) for _ in range(np)]
+        results = [f.result() for f in futures]
+    return results
 
 #Ex4: parallel code - parallelize actual computations by splitting data
 def sphere_volume_parallel2(n,d,np=10):
-    #n is the number of points
+    # n is the number of points
     # d is the number of dimensions of the sphere
-    #np is the number of processes
-    return 
+    # np is the number of processes
+    n_split = n//np
+    with future.ProcessPoolExecutor() as executor:
+        futures = [executor.submit(sphere_volume, n_split, d) for _ in range(np)]
+        results = [f.result() for f in futures]
+    return mean(results)
+
+
     
 def main():
     """
@@ -92,6 +101,7 @@ def main():
         [executor.submit(sphere_volume, n, d) for _ in range(10)]
     stop = pc()
     print(f"Ex3: Parallell time of {d} and {n}: {stop-start}")
+   
     """
     #Ex4
     n = 1000000
@@ -101,12 +111,14 @@ def main():
     stop = pc()
     print(f"Ex4: Sequential time of {d} and {n}: {stop-start}")
     print("What is parallel time?")
+    start = pc()
+    sphere_volume_parallel2(n,d)
+    stop = pc()
+    print(f"Ex4: Parallell time of {d} and {n}: {stop-start}")
     """
-    
-
 if __name__ == '__main__':
     main()
-
+    
 
 
 """
@@ -143,8 +155,21 @@ hypersphere_exact(11) =  1.884103
 """
 Answer to exersize 3:
 
+The time for the sequential computation is ca. 9.4s (at home computer)
+The time for the parallell computation is ca. 4.5s (at home computer)
+
 On my home computer with 4 cores, the results pop out 4 at a time (as expected).
 This means it is 3 iterations instead of 10 which means ca. 30% the time.
 The time is however ca. 50% of the sequential time. I dont know what explains the difference.
+
+"""
+
+"""
+Answe to exersize 4:
+
+The time for the sequential computation is ca. 8.7s (at home computer)
+The time for the parallell computation is ca. 4.2s (at home computer)
+
+That is about double as fast!
 
 """
