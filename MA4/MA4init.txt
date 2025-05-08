@@ -1,0 +1,29 @@
+1+2*3+4          # Should work from start
+3-1+3-1/2        # Will not work until you have fixed the expression function
+
+# Add your own tests here
+
+
+
+# Remove the comment character to try the following
+
+#1 - (5-2*2)/(1+1) - (-2 + 1)      # 
+#sin(3.14159265)                   # Standard functions
+#cos(PI)                           # Predefined constant
+#log(exp(4*0.5 - 1))               # Standard functions
+#1 + 2 + 3 = x                     # Variables. Assignment to the RIGHT!
+#x/2 + x
+#(1=x) + sin(2=y)                  # Assignments
+#vars                              # Prints variable values
+#1+2
+#2*ans + 5                         # Result from last top level expression
+#ans
+#1 + z                             # Undefined variable
+#1+fib(5)        
+#fac(ans)                        # Factorial.  Note integer!
+#fac(2.5)                          # Illegal argument
+#fac(40)                           # Big number
+#2 ++ 4*ans/0                      # Syntax error before evaluation error
+#ans/0 + * x                       # Evaluation before syntax error
+
+# Write tests interactively now!
