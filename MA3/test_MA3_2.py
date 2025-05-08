@@ -1,8 +1,11 @@
 # https://docs.python.org/3/library/unittest.html
 import unittest
 
-from HighOrderFunctionChecker import check_higher_order_functions
 from MA3 import *
+
+
+from HighOrderFunctionChecker import check_higher_order_functions
+
 
 
 class Test(unittest.TestCase):

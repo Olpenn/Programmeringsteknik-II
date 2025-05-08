@@ -34,25 +34,26 @@ def approximate_pi(n): # Ex1
     print(pi)
     return pi
 
-def sphere_volume_single(n,d):
+def sphere_volume(n,d):
+    # sphere_volume requested in Exercise 2
     COORDINATES = [(random.uniform(-1,1) for _ in range(d)) for _ in range(n)]  # Create a tuple of the d coordinates for each point (n times)
     R2 = map(lambda coordinates: sum(x_i**2 for x_i in coordinates), COORDINATES)   # Calculate R2 using comprehension, lambda and map
     in_circle = filter(lambda r2: r2 <= 1, R2)  # Filter out the points within one unit of the origin.
     npoints_in_circle = sum(1 for _ in in_circle)   # Filter is a generator, loop through and count how many elements are there
     return 2**d * npoints_in_circle/n
 
-def sphere_volume(n, d): #Ex2, approximation
+def hypersphere_exact(d): #Ex2, real value
+    # d is the number of dimensions of the sphere 
+    return m.pi**(d/2)/m.gamma(d/2+1)
+
+def sphere_volume_average(n, d): #Ex3, 10 loops average
     # n is the number of points
     # d is the number of dimensions of the sphere
     results = []
     for _ in range(10):
-        volume = sphere_volume_single(n, d)
+        volume = sphere_volume(n, d)
         results.append(volume)
     return mean(results)
-
-def hypersphere_exact(d): #Ex2, real value
-    # d is the number of dimensions of the sphere 
-    return m.pi**(d/2)/m.gamma(d/2+1)
 
 #Ex3: parallel code - parallelize for loop
 def sphere_volume_parallel1(n,d,np=10):
@@ -60,7 +61,7 @@ def sphere_volume_parallel1(n,d,np=10):
     # d is the number of dimensions of the sphere
     # np is the number of processes
     with future.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(sphere_volume_single, n, d) for _ in range(np)]
+        futures = [executor.submit(sphere_volume, n, d) for _ in range(np)]
         results = [f.result() for f in futures]
     return mean(results)
 
@@ -71,56 +72,57 @@ def sphere_volume_parallel2(n,d,np=10):
     # np is the number of processes
     n_split = n//np
     with future.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(sphere_volume_single, n_split, d) for _ in range(np)]
+        futures = [executor.submit(sphere_volume, n_split, d) for _ in range(np)]
         results = [f.result() for f in futures]
     return mean(results)
 
 
     
 def main():
-    """
-    #Ex1
-    dots = [1000, 10000, 100000]
-    for n in dots:
-        approximate_pi(n)
-    #Ex2
-    n = 100000
-    d = 2
-    sphere_volume(n,d)
-    print(f"Actual volume of {d} dimentional sphere = {hypersphere_exact(d)}")
+    Ex = 4 #Choose Exercise
 
-    n = 100000
-    d = 11
-    sphere_volume(n,d)
-    print(f"Actual volume of {d} dimentional sphere = {hypersphere_exact(d)}")
-    """
-    #Ex3
-    n = 100000
-    d = 11
-    start = pc()
-    sphere_volume(n,d)
-    stop = pc()
-    print(f"Ex3: Sequential time of {d} and {n}: {stop-start}")
-    print("What is parallel time?")
-    start = pc()
-    sphere_volume_parallel1(n,d)
-    stop = pc()
-    print(f"Ex3: Parallell time of {d} and {n}: {stop-start}")
-   
-    """
-    #Ex4
-    n = 1000000
-    d = 11
-    start = pc()
-    sphere_volume(n,d)
-    stop = pc()
-    print(f"Ex4: Sequential time of {d} and {n}: {stop-start}")
-    print("What is parallel time?")
-    start = pc()
-    sphere_volume_parallel2(n,d)
-    stop = pc()
-    print(f"Ex4: Parallell time of {d} and {n}: {stop-start}")
-    """
+    if Ex == 1:
+        dots = [1000, 10000, 100000]
+        for n in dots:
+            approximate_pi(n)
+
+    elif Ex == 2:
+        n = 100000
+        d = 2
+        print(f"Approximated volume of {d} dimentional sphere = {sphere_volume(n,d)}")
+        print(f"Actual volume of {d} dimentional sphere = {hypersphere_exact(d)}")
+
+        n = 100000
+        d = 11
+        print(f"Approximated volume of {d} dimentional sphere = {sphere_volume(n,d)}")
+        print(f"Actual volume of {d} dimentional sphere = {hypersphere_exact(d)}")
+
+    elif Ex == 3:
+        n = 100000
+        d = 11
+        start = pc()
+        sphere_volume_average(n,d)
+        stop = pc()
+        print(f"Ex3: Sequential time of d={d} and n={n}: {stop-start}s")
+    
+        start = pc()
+        sphere_volume_parallel1(n,d)
+        stop = pc()
+        print(f"Ex3: Parallell time of d={d} and n={n}: {stop-start}s")
+
+    elif Ex == 4:
+        n = 1000000
+        d = 11
+        start = pc()
+        sphere_volume(n,d)
+        stop = pc()
+        print(f"Ex4: Sequential time of d={d} and n={n}: {stop-start}s")
+ 
+        start = pc()
+        sphere_volume_parallel2(n,d)
+        stop = pc()
+        print(f"Ex4: Parallell time of d={d} and n={n}: {stop-start}s")
+
 if __name__ == '__main__':
     main()
     
