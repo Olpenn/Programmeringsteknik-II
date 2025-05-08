@@ -1,9 +1,9 @@
 """ MA3.py
 
-Student:
-Mail:
-Reviewed by:
-Date reviewed:
+Student: Olov Rahm
+Mail: ollerahm50@gmail.com
+Reviewed by: Oliver
+Date reviewed: 8/5-25
 
 """
 import random
@@ -79,7 +79,7 @@ def sphere_volume_parallel2(n,d,np=10):
 
     
 def main():
-    Ex = 4 #Choose Exercise
+    Ex = 2 #Choose Exercise
 
     if Ex == 1:
         dots = [1000, 10000, 100000]
