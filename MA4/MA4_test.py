@@ -93,12 +93,20 @@ class Test(unittest.TestCase):
         line = '((1)'
         print(f'{line:30s} expects SyntaxError. Note: TokenError is fine, go ahead.', end=' \t \t ')
         wtok = TokenizeWrapper(line)
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(TokenError):
             result = statement(wtok, variables)
         print('Got it')
 
-        tests = ['xxx', 'a+b', '1/(2*3-6)', 'log(-1)',"log(0)",
-                 'fib(-1)', 'fac(1.5)', '1/sin(1-1)']
+        tests = [
+            'xxx', 
+            'a+b', 
+            '1/(2*3-6)', 
+            'log(-1)',
+            "log(0)",
+            'fib(-1)', 
+            'fac(1.5)', 
+            '1/sin(1-1)'
+            ]
         for line in tests:
             print(f'{line:30s} expects EvaluationError', end=' \t \t ')
             wtok = TokenizeWrapper(line)
